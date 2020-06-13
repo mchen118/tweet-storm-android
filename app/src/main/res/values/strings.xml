@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Tweet Storm</string>
+
+    <string name="title_label_text">Title</string>
+    <string name="body_label_text">Body</string>
+    <string name="body_hint">Write Something…</string>
+
+    <string name="tweet_button_text">TWEET</string>
+    <string name="save_button_text">SAVE</string>
+
+    <string name="action_search_title">Search</string>
+    <string name="action_login_title">Login</string>
+
+    <string name="dialog_positive_button_text">Confirm</string>
+    <string name="dialog_negative_button_text">Cancel</string>
+
+    <string name="pin_dialog_title_text">Enter Pin</string>
+
+    <string name="user_profile_pic_description">User Profile Image</string>
+    <string name="logout_button_text">Logout</string>
+    <string name="action_user_info">User Info</string>
+    <string name="pin_dialog_edit_text_hint">Enter Pin</string>
+</resources>
