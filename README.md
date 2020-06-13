@@ -1,2 +1,2 @@
 # Tweet Storm Android
-This is an Android app that allows user to compose a tweet storm without having to manually creating a thread.
+This is an Android app that allows user to compose and send a tweet storm without having to manually creating a twitter thread.
