@@ -44,12 +44,14 @@
         android:id="@+id/floating_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@android:drawable/ic_menu_edit"
+        android:layout_margin="@dimen/fab_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
+        android:focusable="true"
+        android:backgroundTint="@color/twitter_blue"
+        app:borderWidth="0dp"
+        android:src="@android:drawable/ic_menu_edit"
         android:onClick="onFloatingActionButtonClick"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
