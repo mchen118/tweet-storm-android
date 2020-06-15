@@ -16,7 +16,7 @@ import com.muchen.tweetstormandroid.models.Draft;
 import com.muchen.tweetstormandroid.models.StatusId;
 import com.muchen.tweetstormandroid.models.TwitterErrors;
 import com.muchen.tweetstormandroid.models.User;
-import com.muchen.tweetstormandroid.models.UserAuthorizationInfo;
+import com.muchen.tweetstormandroid.models.UserAndTokens;
 
 import com.twitter.twittertext.TwitterTextParseResults;
 import com.twitter.twittertext.TwitterTextParser;
@@ -47,7 +47,7 @@ import se.akerfeldt.okhttp.signpost.SigningInterceptor;
 
 public class TwitterApi {
     private AppDatabase db;
-    private UserAuthorizationInfo ua;
+    private UserAndTokens ua;
 
     private OkHttpOAuthConsumer consumer;
     private OkHttpOAuthProvider provider;
@@ -78,12 +78,12 @@ public class TwitterApi {
         return soleInstance;
     }
 
-    public UserAuthorizationInfo fetchUserAuthorizationInfo(){
+    public UserAndTokens fetchUserAuthorizationInfo(){
         ua = db.userAuthorizationInfoDao().fetchUserAuthorizationInfo();
         return ua;
     }
 
-    public UserAuthorizationInfo getUserAuthorizationInfo() { return ua; }
+    public UserAndTokens getUserAuthorizationInfo() { return ua; }
 
     public TwitterService getTwitterService() { return twitterServiceGson; }
 
@@ -108,7 +108,7 @@ public class TwitterApi {
     private void setAccessTokens(String pin) throws OAuthCommunicationException,
             OAuthExpectationFailedException, OAuthNotAuthorizedException, OAuthMessageSignerException {
         provider.retrieveAccessToken(consumer, pin);
-        ua = new UserAuthorizationInfo();
+        ua = new UserAndTokens();
         ua.setAccessToken(consumer.getToken());
         ua.setAccessTokenSecret(consumer.getTokenSecret());
     }

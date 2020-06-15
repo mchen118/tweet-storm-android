@@ -15,9 +15,9 @@ android {
     }
 
     buildTypes {
-
         release {
             applicationIdSuffix ".release"
+            debuggable false
             minifyEnabled true
             shrinkResources true
             //proguard obfuscates code and makes decompiling harder

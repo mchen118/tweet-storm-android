@@ -5,8 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 
-@Entity(tableName = "user_authorization_info")
-public class UserAuthorizationInfo extends User{
+@Entity(tableName = "user_and_tokens")
+public class UserAndTokens extends User{
 
     @ColumnInfo(name = "access_token")
     private String accessToken;
@@ -14,21 +14,21 @@ public class UserAuthorizationInfo extends User{
     @ColumnInfo(name = "access_token_secret")
     private String accessTokenSecret;
 
-    public UserAuthorizationInfo() {}
+    public UserAndTokens() {}
 
     @Ignore
-    public UserAuthorizationInfo(@NonNull String userId,
-                                 @NonNull String screenName,
-                                 @NonNull String profileImageURLHttps){
+    public UserAndTokens(@NonNull String userId,
+                         @NonNull String screenName,
+                         @NonNull String profileImageURLHttps){
         super(userId, screenName, profileImageURLHttps);
     }
 
     @Ignore
-    public UserAuthorizationInfo(@NonNull String userId,
-                                 @NonNull String screenName,
-                                 @NonNull String profileImageURLHttps,
-                                 String accessToken,
-                                 String accessTokenSecret){
+    public UserAndTokens(@NonNull String userId,
+                         @NonNull String screenName,
+                         @NonNull String profileImageURLHttps,
+                         String accessToken,
+                         String accessTokenSecret){
         super(userId, screenName, profileImageURLHttps);
         this.accessToken = accessToken;
         this.accessTokenSecret = accessTokenSecret;

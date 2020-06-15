@@ -20,7 +20,7 @@ import com.muchen.tweetstormandroid.R;
 import com.muchen.tweetstormandroid.concurrent.AppExecutorServices;
 import com.muchen.tweetstormandroid.constants.Constants;
 import com.muchen.tweetstormandroid.database.AppDatabase;
-import com.muchen.tweetstormandroid.models.UserAuthorizationInfo;
+import com.muchen.tweetstormandroid.models.UserAndTokens;
 import com.muchen.tweetstormandroid.restservice.TwitterApi;
 
 import oauth.signpost.exception.OAuthCommunicationException;
@@ -55,7 +55,7 @@ public class BaseActivity extends AppCompatActivity implements
         super.onStart();
         if (optionsMenu != null){
             if (twitterApi.getUserAuthorizationInfo() != null){
-                // this avoids querying database if UserAuthorizationInfo exists in memory (i.e.
+                // this avoids querying database if UserAndTokens exists in memory (i.e.
                 // in the twitterApi instance)
                 Log.d("debug.actionbar", "twitterApi.ua != null");
                 runOnUiThread(()-> adjustOptionsMenuItemVisibility(
@@ -63,7 +63,7 @@ public class BaseActivity extends AppCompatActivity implements
             } else {
                 Log.d("debug.actionbar", "twitterApi.ua == null");
                 executorServices.diskIO().execute(()->{
-                    UserAuthorizationInfo ua = twitterApi.fetchUserAuthorizationInfo();
+                    UserAndTokens ua = twitterApi.fetchUserAuthorizationInfo();
                     runOnUiThread(()-> adjustOptionsMenuItemVisibility(ua));
                 });
             }
@@ -83,7 +83,7 @@ public class BaseActivity extends AppCompatActivity implements
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_bar, menu);
         if (twitterApi.getUserAuthorizationInfo() != null){
-            // this avoids querying database if UserAuthorizationInfo exists in memory (i.e.
+            // this avoids querying database if UserAndTokens exists in memory (i.e.
             // in the twitterApi instance)
             Log.d("debug.actionbar", "twitterApi.ua != null");
             runOnUiThread(()-> adjustOptionsMenuItemVisibility(
@@ -91,14 +91,14 @@ public class BaseActivity extends AppCompatActivity implements
         } else {
             Log.d("debug.actionbar", "twitterApi.ua == null");
             executorServices.diskIO().execute(()->{
-                UserAuthorizationInfo ua = twitterApi.fetchUserAuthorizationInfo();
+                UserAndTokens ua = twitterApi.fetchUserAuthorizationInfo();
                 runOnUiThread(()-> adjustOptionsMenuItemVisibility(ua));
             });
         }
         return true;
     }
 
-    private void adjustOptionsMenuItemVisibility(UserAuthorizationInfo ua){
+    private void adjustOptionsMenuItemVisibility(UserAndTokens ua){
         MenuItem searchMenuItem = optionsMenu.findItem(R.id.action_search);
         MenuItem loginMenuItem = optionsMenu.findItem(R.id.action_login);
         MenuItem userInfoMenuItem = optionsMenu.findItem(R.id.action_user_info);

@@ -7,9 +7,9 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.muchen.tweetstormandroid.models.Draft;
-import com.muchen.tweetstormandroid.models.UserAuthorizationInfo;
+import com.muchen.tweetstormandroid.models.UserAndTokens;
 
-@Database(entities = {Draft.class, UserAuthorizationInfo.class}, version = 1, exportSchema = false)
+@Database(entities = {Draft.class, UserAndTokens.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final Object lock = new Object();
     private static final String DATABASE_NAME = "drafts";
@@ -29,5 +29,5 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract DraftDao draftDao();
 
-    public abstract UserAuthorizationInfoDao userAuthorizationInfoDao();
+    public abstract UserAndTokensDao userAuthorizationInfoDao();
 }
