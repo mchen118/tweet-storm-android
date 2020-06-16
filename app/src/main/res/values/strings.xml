@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">Tweet Storm</string>
+    <string name="app_name">Tweetstorm Maker</string>
 
     <string name="title_label_text">Title</string>
     <string name="body_label_text">Body</string>
-    <string name="body_hint">Write Something…</string>
+    <string name="title_edit_text_hint">(optional)</string>
+    <string name="body_edit_text_hint">Write Something…</string>
 
     <string name="tweet_button_text">TWEET</string>
     <string name="save_button_text">SAVE</string>

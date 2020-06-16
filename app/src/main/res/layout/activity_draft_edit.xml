@@ -49,10 +49,11 @@
         app:layout_constraintTop_toBottomOf="@id/title_label_text_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:maxLength="268"
+        android:maxLength="130"
         android:textSize="@dimen/label_text_size"
         android:inputType="text"
         android:importantForAutofill="no"
+        android:hint="@string/title_edit_text_hint"
         android:backgroundTint="@color/twitter_blue"/>
 
     <TextView
@@ -82,7 +83,7 @@
             android:id="@+id/body_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/body_hint"
+            android:hint="@string/body_edit_text_hint"
             android:importantForAutofill="no"
             android:inputType="textMultiLine"
             android:textSize="@dimen/body_text_size"
