@@ -98,8 +98,8 @@ public class DraftEditActivity extends BaseActivity implements DraftInterface{
         }
 
         executorServices.diskIO().execute(()->{
-            twitterApi.fetchUserAuthorizationInfo();
-            if (twitterApi.getUserAuthorizationInfo() != null){
+            twitterApi.fetchUserAndTokens();
+            if (twitterApi.getUserAndTokens() != null){
                 // in case user has logged in
                 if (twitterApi.getTwitterService() == null) { twitterApi.setTwitterService(); }
 

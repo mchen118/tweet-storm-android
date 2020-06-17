@@ -47,7 +47,7 @@ import se.akerfeldt.okhttp.signpost.SigningInterceptor;
 
 public class TwitterApi {
     private AppDatabase db;
-    private UserAndTokens ua;
+    private UserAndTokens u;
 
     private OkHttpOAuthConsumer consumer;
     private OkHttpOAuthProvider provider;
@@ -78,18 +78,18 @@ public class TwitterApi {
         return soleInstance;
     }
 
-    public UserAndTokens fetchUserAuthorizationInfo(){
-        ua = db.userAuthorizationInfoDao().fetchUserAuthorizationInfo();
-        return ua;
+    public UserAndTokens fetchUserAndTokens(){
+        u = db.userAndTokensDao().fetchUserAuthorizationInfo();
+        return u;
     }
 
-    public UserAndTokens getUserAuthorizationInfo() { return ua; }
+    public UserAndTokens getUserAndTokens() { return u; }
 
     public TwitterService getTwitterService() { return twitterServiceGson; }
 
     public void logout(){
-        ua = null;
-        db.userAuthorizationInfoDao().deleteUserAuthorizationInfo();
+        u = null;
+        db.userAndTokensDao().deleteUserAndTokens();
     }
 
     public String retrieveAuthorizationURL() throws OAuthCommunicationException,
@@ -97,7 +97,7 @@ public class TwitterApi {
         return provider.retrieveRequestToken(consumer, OAuth.OUT_OF_BAND);
     }
 
-    public void setUserAuthorizationInfo(String pin, Context appContext)
+    public void setUserAndTokens(String pin, Context appContext)
             throws OAuthNotAuthorizedException, OAuthExpectationFailedException,
             OAuthCommunicationException, OAuthMessageSignerException {
         setAccessTokens(pin);
@@ -108,13 +108,13 @@ public class TwitterApi {
     private void setAccessTokens(String pin) throws OAuthCommunicationException,
             OAuthExpectationFailedException, OAuthNotAuthorizedException, OAuthMessageSignerException {
         provider.retrieveAccessToken(consumer, pin);
-        ua = new UserAndTokens();
-        ua.setAccessToken(consumer.getToken());
-        ua.setAccessTokenSecret(consumer.getTokenSecret());
+        u = new UserAndTokens();
+        u.setAccessToken(consumer.getToken());
+        u.setAccessTokenSecret(consumer.getTokenSecret());
     }
 
     public void setTwitterService(){
-        consumer.setTokenWithSecret(ua.getAccessToken(), ua.getAccessTokenSecret());
+        consumer.setTokenWithSecret(u.getAccessToken(), u.getAccessTokenSecret());
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new SigningInterceptor(consumer))
@@ -131,16 +131,16 @@ public class TwitterApi {
 
     // context needed for getting filesDir where user profile image is stored
     private void setUserInfo(final Context appContext) {
-        Call<User> getUserInfoCall = twitterServiceGson.getUserInfo();
+        Call<User> getUserInfoCall = twitterServiceGson.fetchUser();
         try {
             Response<User> response = getUserInfoCall.execute();
             if (response.isSuccessful()) {
                 User user = response.body();
-                ua.setUserId(user.getUserId());
-                ua.setScreenName(user.getScreenName());
-                ua.setProfileImageURLHttps(user.getProfileImageURLHttps());
+                u.setUserId(user.getUserId());
+                u.setScreenName(user.getScreenName());
+                u.setProfileImageURLHttps(user.getProfileImageURLHttps());
                 try (BufferedInputStream in = new BufferedInputStream(
-                        new URL(ua.getProfileImageURLHttps()).openStream());
+                        new URL(u.getProfileImageURLHttps()).openStream());
                      BufferedOutputStream out = new BufferedOutputStream(
                              appContext.openFileOutput(Constants.PROFILE_PIC_LOCAL_FILE_NAME,
                                      Context.MODE_PRIVATE))) {
@@ -158,10 +158,10 @@ public class TwitterApi {
         }
     }
 
-    public void persistUserAuthorizationInfo(){
+    public void persistUserAndTokens(){
         // because of OnConflict.REPLACE conflict strategy, this will update the sole record in the
         // user_authorization_info table if user_id matches
-        db.userAuthorizationInfoDao().insertUserAuthorizationInfo(ua);
+        db.userAndTokensDao().insertUserAuthorizationInfo(u);
     }
 
     private int backUpToLastNonLetterCodePoint(String string, int startIndex, int endIndex){
@@ -209,7 +209,7 @@ public class TwitterApi {
 
         String previousStatusId = res.body().getStatusId();
         Log.d("debug.twitterapi", "previousStatusId = " + previousStatusId);
-        final String tag = "@" + ua.getScreenName();
+        final String tag = "@" + u.getScreenName();
         final int tagLength = tag.length();
 
         // Both begin index and end index are inclusive.

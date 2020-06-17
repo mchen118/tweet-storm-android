@@ -18,7 +18,7 @@ public interface UserAndTokensDao {
     void updateUserAuthorizationInfo(UserAndTokens ua);
 
     @Query("DELETE FROM user_and_tokens")
-    void deleteUserAuthorizationInfo();
+    void deleteUserAndTokens();
 
     // If return type is List<UserAndTokens>, this method
     // does not return null - an empty list is returned in case result set is empty.

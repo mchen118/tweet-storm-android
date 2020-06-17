@@ -15,7 +15,7 @@ import retrofit2.http.POST;
 public interface TwitterService {
 
     @GET("account/verify_credentials.json")
-    Call<User> getUserInfo();
+    Call<User> fetchUser();
 
     @FormUrlEncoded
     @POST("statuses/update.json")

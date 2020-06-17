@@ -5,11 +5,12 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId 'com.muchen.tweetstormmobile'
+        // I cannot change the applicationId without making a separate app on google play store
+        applicationId 'com.muchen.tweetstormandroid'
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

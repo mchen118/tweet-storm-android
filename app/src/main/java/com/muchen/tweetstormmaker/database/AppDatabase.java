@@ -29,5 +29,5 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract DraftDao draftDao();
 
-    public abstract UserAndTokensDao userAuthorizationInfoDao();
+    public abstract UserAndTokensDao userAndTokensDao();
 }
