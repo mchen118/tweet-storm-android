@@ -9,7 +9,6 @@ import android.os.Build;
 import android.util.Log;
 
 import com.google.gson.Gson;
-
 import com.muchen.tweetstormmaker.constants.Constants;
 import com.muchen.tweetstormmaker.database.AppDatabase;
 import com.muchen.tweetstormmaker.models.Draft;
@@ -17,7 +16,6 @@ import com.muchen.tweetstormmaker.models.StatusId;
 import com.muchen.tweetstormmaker.models.TwitterErrors;
 import com.muchen.tweetstormmaker.models.User;
 import com.muchen.tweetstormmaker.models.UserAndTokens;
-
 import com.twitter.twittertext.TwitterTextParseResults;
 import com.twitter.twittertext.TwitterTextParser;
 
@@ -33,14 +31,11 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
-
 import okhttp3.OkHttpClient;
-
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer;
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthProvider;
 import se.akerfeldt.okhttp.signpost.SigningInterceptor;
@@ -71,6 +66,7 @@ public class TwitterApi {
         if (soleInstance == null){
             synchronized (lock){
                 if (soleInstance == null){
+                    // makes sure no one "soleInstance" field is created
                     soleInstance = new TwitterApi(CONSUMER_KEY, CONSUMER_KEY_SECRET, db);
                 }
             }
@@ -92,21 +88,15 @@ public class TwitterApi {
         db.userAndTokensDao().deleteUserAndTokens();
     }
 
-    public String retrieveAuthorizationURL() throws OAuthCommunicationException,
-            OAuthExpectationFailedException, OAuthNotAuthorizedException, OAuthMessageSignerException {
+    public String retrieveAuthorizationURL() throws
+            OAuthCommunicationException, OAuthExpectationFailedException,
+            OAuthNotAuthorizedException, OAuthMessageSignerException {
         return provider.retrieveRequestToken(consumer, OAuth.OUT_OF_BAND);
     }
 
-    public void setUserAndTokens(String pin, Context appContext)
-            throws OAuthNotAuthorizedException, OAuthExpectationFailedException,
-            OAuthCommunicationException, OAuthMessageSignerException {
-        setAccessTokens(pin);
-        setTwitterService();
-        setUserInfo(appContext);
-    }
-
-    private void setAccessTokens(String pin) throws OAuthCommunicationException,
-            OAuthExpectationFailedException, OAuthNotAuthorizedException, OAuthMessageSignerException {
+    private void setAccessTokens(String pin) throws
+            OAuthCommunicationException, OAuthExpectationFailedException,
+            OAuthNotAuthorizedException, OAuthMessageSignerException{
         provider.retrieveAccessToken(consumer, pin);
         u = new UserAndTokens();
         u.setAccessToken(consumer.getToken());
@@ -130,7 +120,7 @@ public class TwitterApi {
     }
 
     // context needed for getting filesDir where user profile image is stored
-    private void setUserInfo(final Context appContext) {
+    private void setUserInfo(final Context appContext) throws IOException{
         Call<User> getUserInfoCall = twitterServiceGson.fetchUser();
         try {
             Response<User> response = getUserInfoCall.execute();
@@ -151,11 +141,21 @@ public class TwitterApi {
                     }
                 } catch (IOException e) {
                     Log.d("debug", "IOException occurred while downloading/persisting user profile image");
+                    throw e;
                 }
             }
         } catch (IOException e) {
             Log.d("debug.network", "IOException occurred while talking to API server");
+            throw e;
         }
+    }
+
+    public void setUserAndTokens(String pin, Context appContext)
+            throws OAuthNotAuthorizedException, OAuthExpectationFailedException,
+            OAuthCommunicationException, OAuthMessageSignerException, IOException {
+        setAccessTokens(pin);
+        setTwitterService();
+        setUserInfo(appContext);
     }
 
     public void persistUserAndTokens(){

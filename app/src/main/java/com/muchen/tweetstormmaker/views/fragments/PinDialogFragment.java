@@ -1,4 +1,4 @@
-package com.muchen.tweetstormmaker.views;
+package com.muchen.tweetstormmaker.views.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

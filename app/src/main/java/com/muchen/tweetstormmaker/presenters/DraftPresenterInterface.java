@@ -2,13 +2,11 @@ package com.muchen.tweetstormmaker.presenters;
 
 import com.muchen.tweetstormmaker.models.Draft;
 
-import java.util.concurrent.ExecutionException;
-
 public interface DraftPresenterInterface {
     void fetchAllDrafts();
     void fetchDraftById(long draftId);
 
-    long insertNewDraftAndReturnId(Draft draft) throws ExecutionException, InterruptedException;
+    long insertNewDraftAndReturnId(Draft draft);
 
     void updateDraft(Draft draft);
 

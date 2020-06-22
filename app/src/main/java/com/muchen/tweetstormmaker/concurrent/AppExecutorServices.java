@@ -4,7 +4,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class AppExecutorServices {
-    private static AppExecutorServices soleInstance = new AppExecutorServices(Executors.newSingleThreadExecutor(),
+    private static volatile AppExecutorServices soleInstance =
+            new AppExecutorServices(Executors.newSingleThreadExecutor(),
             Executors.newSingleThreadExecutor());
     private ExecutorService diskIO;
     private ExecutorService networkIO;

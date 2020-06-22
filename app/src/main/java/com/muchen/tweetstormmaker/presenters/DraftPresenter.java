@@ -1,22 +1,25 @@
 package com.muchen.tweetstormmaker.presenters;
 
+import android.util.Log;
+
 import com.muchen.tweetstormmaker.concurrent.AppExecutorServices;
 import com.muchen.tweetstormmaker.database.AppDatabase;
 import com.muchen.tweetstormmaker.models.Draft;
-import com.muchen.tweetstormmaker.views.DraftInterface;
+import com.muchen.tweetstormmaker.views.activities.DraftViewInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class DraftPresenter implements DraftPresenterInterface {
-    private AppExecutorServices executorServices;
+    private DraftViewInterface view;
     private AppDatabase db;
-    private DraftInterface view;
+    private AppExecutorServices executorServices;
 
-    public DraftPresenter(DraftInterface view, AppDatabase db, AppExecutorServices executorServices){
+    public DraftPresenter(DraftViewInterface view, AppDatabase db, AppExecutorServices executorServices){
         this.db = db;
         this.view = view;
         this.executorServices = executorServices;
@@ -40,15 +43,19 @@ public class DraftPresenter implements DraftPresenterInterface {
     }
 
     @Override
-    public long insertNewDraftAndReturnId(Draft draft) throws ExecutionException, InterruptedException {
-        Future<Long> future = executorServices.diskIO().submit(new Callable<Long>(){
-            @Override
-            public Long call() {
-                List<Long> draftIdList = db.draftDao().insertDrafts(draft);
-                return draftIdList.get(0);
-            }
+    public long insertNewDraftAndReturnId(Draft draft) {
+        Future<Long> future = executorServices.diskIO().submit(() -> {
+            List<Long> draftIdList = db.draftDao().insertDrafts(draft);
+            return draftIdList.get(0);
         });
-        return future.get();
+
+        try {
+            long result = future.get(2, TimeUnit.SECONDS);
+            return result;
+        } catch (ExecutionException | InterruptedException | TimeoutException e){
+            Log.d("debug.database", e.toString());
+            return -1;
+        }
     }
 
     @Override

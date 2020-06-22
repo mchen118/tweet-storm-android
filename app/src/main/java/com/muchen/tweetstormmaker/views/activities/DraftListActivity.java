@@ -1,4 +1,4 @@
-package com.muchen.tweetstormmaker.views;
+package com.muchen.tweetstormmaker.views.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,10 +19,11 @@ import com.muchen.tweetstormmaker.databinding.ActivityDraftViewBinding;
 import com.muchen.tweetstormmaker.models.Draft;
 import com.muchen.tweetstormmaker.presenters.DraftPresenter;
 import com.muchen.tweetstormmaker.presenters.DraftPresenterInterface;
+import com.muchen.tweetstormmaker.views.adapters.DraftAdapter;
 
 import java.util.List;
 
-public class DraftViewActivity extends BaseActivity implements DraftInterface {
+public class DraftListActivity extends BaseActivity implements DraftViewInterface {
     private ActivityDraftViewBinding binding;
     private DraftPresenterInterface draftPresenter;
     private DraftAdapter draftAdapter;
@@ -30,7 +31,7 @@ public class DraftViewActivity extends BaseActivity implements DraftInterface {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("debug.lifecycle", "DraftViewActivity onCreate()");
+        Log.d("debug.lifecycle", "DraftListActivity onCreate()");
         // sets up view binding
         binding = ActivityDraftViewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -65,7 +66,7 @@ public class DraftViewActivity extends BaseActivity implements DraftInterface {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("debug.lifecycle", "DraftViewActivity onStart()");
+        Log.d("debug.lifecycle", "DraftListActivity onStart()");
         // updates UI based on data fetched from database
         draftPresenter.fetchAllDrafts();
     }
@@ -73,33 +74,33 @@ public class DraftViewActivity extends BaseActivity implements DraftInterface {
     @Override
     protected void onResume(){
         super.onResume();
-        Log.d("debug.lifecycle", "DraftViewActivity onResume()");
+        Log.d("debug.lifecycle", "DraftListActivity onResume()");
     }
 
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("debug.lifecycle", "DraftViewActivity onPause()");
+        Log.d("debug.lifecycle", "DraftListActivity onPause()");
     }
 
     @Override
     protected void onStop(){
         super.onStop();
-        Log.d("debug.lifecycle", "DraftViewActivity onStop()");
+        Log.d("debug.lifecycle", "DraftListActivity onStop()");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("debug.lifecycle", "DraftViewActivity onDestroy()");
+        Log.d("debug.lifecycle", "DraftListActivity onDestroy()");
     }
 
     // overridden method that sets up the app bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        Log.d("debug.lifecycle", "DraftViewActivity onCreateOptionsMenu()");
+        Log.d("debug.lifecycle", "DraftListActivity onCreateOptionsMenu()");
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         MenuItem loginMenuItem = optionsMenu.findItem(R.id.action_login);
         MenuItem userInfoMenuItem = menu.findItem(R.id.action_user_info);
@@ -137,7 +138,7 @@ public class DraftViewActivity extends BaseActivity implements DraftInterface {
     }
 
     public void onFloatingActionButtonClick(View v){
-        Intent intent = new Intent(DraftViewActivity.this, DraftEditActivity.class);
+        Intent intent = new Intent(DraftListActivity.this, DraftEditActivity.class);
         startActivity(intent);
     }
 

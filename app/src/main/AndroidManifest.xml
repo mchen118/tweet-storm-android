@@ -10,14 +10,14 @@
         android:roundIcon="@mipmap/icon_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name="com.muchen.tweetstormmaker.views.DraftViewActivity">
+        <activity android:name="com.muchen.tweetstormmaker.views.activities.DraftListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.muchen.tweetstormmaker.views.DraftEditActivity">
+        <activity android:name="com.muchen.tweetstormmaker.views.activities.DraftEditActivity">
 
         </activity>
     </application>

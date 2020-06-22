@@ -5,7 +5,7 @@
     android:id="@+id/activity_edit_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.DraftEditActivity">
+    tools:context=".views.activities.DraftEditActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/activity_draft_edit_app_bar"

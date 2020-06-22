@@ -1,4 +1,4 @@
-package com.muchen.tweetstormmaker.views;
+package com.muchen.tweetstormmaker.views.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,17 +12,13 @@ import com.muchen.tweetstormmaker.R;
 import com.muchen.tweetstormmaker.constants.Constants;
 import com.muchen.tweetstormmaker.database.AppDatabase;
 import com.muchen.tweetstormmaker.databinding.ActivityDraftEditBinding;
-
 import com.muchen.tweetstormmaker.models.Draft;
 import com.muchen.tweetstormmaker.presenters.DraftPresenter;
 import com.muchen.tweetstormmaker.presenters.DraftPresenterInterface;
-import com.muchen.tweetstormmaker.restservice.TwitterApiException;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-public class DraftEditActivity extends BaseActivity implements DraftInterface{
+public class DraftEditActivity extends BaseActivity implements DraftViewInterface {
     private long draftId = -1;
     private ActivityDraftEditBinding binding;
     private DraftPresenterInterface draftPresenter;
@@ -36,7 +32,7 @@ public class DraftEditActivity extends BaseActivity implements DraftInterface{
         setContentView(binding.getRoot());
         // sets app bar
         setSupportActionBar(binding.activityDraftEditToolBar);
-        // sets up presenter
+        // sets up draft presenter
         draftPresenter = new DraftPresenter( this, AppDatabase.soleInstance(getApplicationContext()),
                 executorServices);
         // fetches existing draft if needed
@@ -97,50 +93,12 @@ public class DraftEditActivity extends BaseActivity implements DraftInterface{
             return;
         }
 
-        executorServices.diskIO().execute(()->{
-            twitterApi.fetchUserAndTokens();
-            if (twitterApi.getUserAndTokens() != null){
-                // in case user has logged in
-                if (twitterApi.getTwitterService() == null) { twitterApi.setTwitterService(); }
-
-                executorServices.networkIO().execute(()->{
-                    try {
-                        twitterApi.tweetDraft(new Draft(title, body));
-                    } catch (IOException e) {
-                        runOnUiThread(()->
-                            Toast.makeText(this, "Encountered a network error while tweeting - " +
-                                            "a portion of your draft could have been tweeted out already.",
-                                    Toast.LENGTH_LONG).show());
-                        Log.d("debug.network", e.toString());
-                        return;
-                    } catch (RuntimeException e){
-                        runOnUiThread(()->
-                                Toast.makeText(this, "Encountered an unexpected error while tweeting - " +
-                                                "a portion of your draft could have been tweeted out already.",
-                                        Toast.LENGTH_LONG).show());
-                        Log.d("debug.network", e.toString());
-                        return;
-                    } catch (TwitterApiException e){
-                        runOnUiThread(()->
-                                Toast.makeText(this, "Encountered a Twitter API error while tweeting - " +
-                                            "a portion of your draft could have been tweeted out already.",
-                                    Toast.LENGTH_LONG).show());
-                        Log.d("debug.twitterapi", e.toString());
-                        return;
-                    }
-
-                    draftPresenter.deleteDraftById(draftId);
-                    runOnUiThread(()->{
-                        Toast.makeText(this, "Tweet Successful.", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(this, DraftViewActivity.class));
-                    });
-                });
-            } else {
-                // in case user has not logged in/completed authorization
-                runOnUiThread(()->
-                        Toast.makeText(this, "Please Login First", Toast.LENGTH_LONG).show());
-            }
-        });
+        boolean tweetSuccessful = twitterApiPresenter.tweetDraft(new Draft(title, body));
+        if (tweetSuccessful) {
+            draftPresenter.deleteDraftById(draftId);
+            Toast.makeText(this, "Tweet Successful.", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(this, DraftListActivity.class));
+        }
     }
 
     public void onSaveButtonClick(View v) {
@@ -154,10 +112,8 @@ public class DraftEditActivity extends BaseActivity implements DraftInterface{
         }
         // in case draft content is not empty, and a new draft is being edited upon
         if (draftId == -1){
-            try {
-                draftId = draftPresenter.insertNewDraftAndReturnId(new Draft(title, body));
-            } catch (ExecutionException | InterruptedException e) {
-                Log.d("debug.database", e.toString());
+            draftId = draftPresenter.insertNewDraftAndReturnId(new Draft(title, body));
+            if (draftId == -1) {
                 Toast.makeText(this, "Draft Failed To Save", Toast.LENGTH_LONG).show();
                 return;
             }

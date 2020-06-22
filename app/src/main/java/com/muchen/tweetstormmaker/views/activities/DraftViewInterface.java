@@ -1,9 +1,9 @@
-package com.muchen.tweetstormmaker.views;
+package com.muchen.tweetstormmaker.views.activities;
 
 import com.muchen.tweetstormmaker.models.Draft;
 
 import java.util.List;
 
-public interface DraftInterface {
+public interface DraftViewInterface {
     void displayDrafts(List<Draft> drafts);
 }

@@ -1,4 +1,4 @@
-package com.muchen.tweetstormmaker.views;
+package com.muchen.tweetstormmaker.views.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.muchen.tweetstormmaker.R;
 import com.muchen.tweetstormmaker.constants.Constants;
 import com.muchen.tweetstormmaker.models.Draft;
+import com.muchen.tweetstormmaker.views.activities.DraftEditActivity;
 
 import java.text.DateFormat;
 import java.util.Collections;
