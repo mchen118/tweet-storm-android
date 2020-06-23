@@ -161,7 +161,8 @@ public class BaseActivity extends AppCompatActivity implements
                                 OAuthExpectationFailedException |
                                 OAuthCommunicationException e){
                             Log.d("debug.signpost", e.toString());
-                            Toast.makeText(this,"Login Failed", Toast.LENGTH_LONG).show();
+                            runOnUiThread(()->Toast.makeText(this,
+                                    "Login Failed", Toast.LENGTH_LONG).show());
                         }
                     });
                 }
