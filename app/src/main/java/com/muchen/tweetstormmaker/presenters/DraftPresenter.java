@@ -50,8 +50,7 @@ public class DraftPresenter implements DraftPresenterInterface {
         });
 
         try {
-            long result = future.get(2, TimeUnit.SECONDS);
-            return result;
+            return future.get(2, TimeUnit.SECONDS);
         } catch (ExecutionException | InterruptedException | TimeoutException e){
             Log.d("debug.database", e.toString());
             return -1;

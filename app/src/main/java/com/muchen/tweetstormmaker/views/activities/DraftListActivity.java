@@ -39,7 +39,7 @@ public class DraftListActivity extends BaseActivity implements DraftViewInterfac
         setSupportActionBar(binding.activityDraftViewToolBar);
         // sets up recycler view
         LinearLayoutManager manager = new LinearLayoutManager(this);
-        draftAdapter = new DraftAdapter(getApplicationContext());
+        draftAdapter = new DraftAdapter(this);
         binding.recyclerView.setLayoutManager(manager);
         binding.recyclerView.setAdapter(draftAdapter);
         // sets up presenter
@@ -142,7 +142,7 @@ public class DraftListActivity extends BaseActivity implements DraftViewInterfac
         startActivity(intent);
     }
 
-    // draft interface implementation
+    // draft view interface implementation
     @Override
     public void displayDrafts(List<Draft> drafts) {
         draftAdapter.setDrafts(drafts);

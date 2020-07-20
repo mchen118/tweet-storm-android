@@ -5,13 +5,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.core.view.ActionProvider;
 
-import com.muchen.tweetstormmaker.R;
 import com.muchen.tweetstormmaker.concurrent.AppExecutorServices;
+import com.muchen.tweetstormmaker.databinding.UserInfoActionProviderBinding;
 import com.muchen.tweetstormmaker.restservice.TwitterApi;
 
 public class UserInfoActionProvider extends ActionProvider {
@@ -34,16 +32,14 @@ public class UserInfoActionProvider extends ActionProvider {
     @Override
     public View onCreateActionView() {
         Log.d("debug.actionbar", "onCreateActionView() called");
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View providerView = layoutInflater.inflate(R.layout.user_info_action_provider, null);
-        Button logoutButton = (Button) providerView.findViewById(R.id.logout_button);
-        logoutButton.setOnClickListener((view)->{
+        UserInfoActionProviderBinding binding = UserInfoActionProviderBinding.inflate(
+                LayoutInflater.from(context));
+        binding.logoutButton.setOnClickListener((view)->{
             AppExecutorServices.soleInstance().diskIO().execute(()-> twitterApi.logout());
             userInfoMenuItem.collapseActionView();
         });
-        TextView screenNameTextView = (TextView) providerView.findViewById(R.id.user_screen_name_text_view);
-        screenNameTextView.setText("@" + screenName);
-        return providerView;
+        binding.userScreenNameTextView.setText("@" + screenName);
+        return binding.getRoot();
     }
 
     @Override
