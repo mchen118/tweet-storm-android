@@ -89,14 +89,14 @@ public class DraftEditActivity extends BaseActivity implements DraftViewInterfac
         final String body = binding.bodyEditText.getText().toString();
         // in case draft body is empty
         if (body.isEmpty()){
-            Toast.makeText(this, "Cannot Tweet with Empty Body", Toast.LENGTH_LONG).show();
+            showToast("Cannot Tweet with Empty Body", Toast.LENGTH_LONG);
             return;
         }
 
         boolean tweetSuccessful = twitterApiPresenter.tweetDraft(new Draft(title, body));
         if (tweetSuccessful) {
             draftPresenter.deleteDraftById(draftId);
-            Toast.makeText(this, "Tweet Successful.", Toast.LENGTH_LONG).show();
+            showToast("Tweet Successful", Toast.LENGTH_LONG);
             startActivity(new Intent(this, DraftListActivity.class));
         }
     }
@@ -107,24 +107,24 @@ public class DraftEditActivity extends BaseActivity implements DraftViewInterfac
         final String body = binding.bodyEditText.getText().toString();
         // in case draft title or body is empty
         if (title.isEmpty() && body.isEmpty()){
-            Toast.makeText(this, "Cannot Save Empty Draft", Toast.LENGTH_LONG).show();
+            showToast("Cannot Save Empty Draft", Toast.LENGTH_LONG);
             return;
         }
         // in case draft content is not empty, and a new draft is being edited upon
         if (draftId == -1){
             draftId = draftPresenter.insertNewDraftAndReturnId(new Draft(title, body));
             if (draftId == -1) {
-                Toast.makeText(this, "Draft Failed To Save", Toast.LENGTH_LONG).show();
+                showToast("Draft Failed to Save", Toast.LENGTH_LONG);
                 return;
             }
-            Toast.makeText(this, "Draft Saved", Toast.LENGTH_LONG).show();
+            showToast("Draft Saved", Toast.LENGTH_LONG);
             return;
         }
         // In case draft content is not empty, and an existing draft is being edited upon (update),
         // or in case the draft has been tweeted out but for some reason the user still wants to
         // save it (insert).
         draftPresenter.updateDraft(new Draft(draftId, title, body));
-        Toast.makeText(this, "Draft Saved", Toast.LENGTH_LONG).show();
+        showToast("Draft Saved", Toast.LENGTH_LONG);
     }
 
     // draft interface implementation

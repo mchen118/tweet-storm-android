@@ -168,8 +168,7 @@ public class BaseActivity extends AppCompatActivity implements
 
     @Override
     public void showToast(String msg, int duration) {
-        Toast toast = Toast.makeText(this, msg, duration);
-        runOnUiThread(()-> toast.show());
+        runOnUiThread(()-> Toast.makeText(this, msg, duration).show());
     }
 
     @Override

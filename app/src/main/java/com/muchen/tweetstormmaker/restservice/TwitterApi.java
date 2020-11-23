@@ -184,16 +184,40 @@ public class TwitterApi {
     }
 
     public void tweetDraft(Draft draft) throws IOException, RuntimeException, TwitterApiException {
-        final String titleTweet;
-        final String bodyTweet = draft.getBody();
+        String title;
         if (draft.getTitle().isEmpty()){
-            titleTweet = "Thread:";
+            title = "Thread:\n";
         } else {
-            titleTweet = draft.getTitle() + ": A Thread";
+            title = draft.getTitle() + ": A Thread\n";
+        }
+        String thread = title + draft.getBody();
+
+        // Both begin index and end index are inclusive.
+        int startIndex = 0;
+        int endIndex = 0;
+        int tweetStormLength = 1;
+
+        // tweets first tweet in tweetstorm
+        endIndex = startIndex + Constants.TWEET_MAX_CHAR - 3;
+        if (endIndex >= thread.length()) {
+            endIndex = thread.length() - 1;
+        } else {
+            endIndex = backUpToLastNonLetterCodePoint(thread, startIndex, endIndex);
         }
 
-        // tweets 1st tweet in thread (thread title tweet)
-        Response<StatusId> res = twitterServiceGson.postTweet(titleTweet).execute();
+        TwitterTextParseResults parseResult = TwitterTextParser.parseTweet(
+                thread.substring(startIndex, endIndex + 1));
+
+        while (parseResult.weightedLength > (Constants.TWEET_MAX_CHAR - 3)){
+            endIndex -= (endIndex - (140 - 3)) / 2;
+            endIndex = backUpToLastNonLetterCodePoint(thread, startIndex, endIndex);
+            parseResult = TwitterTextParser.parseTweet(
+                    thread.substring(startIndex, endIndex + 1));
+        }
+
+        String firstTweet = thread.substring(startIndex, endIndex + 1) + "\n" + tweetStormLength + "/";
+
+        Response<StatusId> res = twitterServiceGson.postTweet(firstTweet).execute();
         if (!res.isSuccessful()){
             // throws TwitterApiException if server communication is fine but an API specific
             // error occurs, which contains the twitter API error message
@@ -206,39 +230,35 @@ public class TwitterApi {
             }
             throw (new TwitterApiException(builder.toString()));
         }
+        startIndex = endIndex + 1;
+        tweetStormLength++;
 
-        String previousStatusId = res.body().getStatusId();
-        Log.d("debug.twitterapi", "previousStatusId = " + previousStatusId);
+        // tweets every other tweet in the tweetstorm, is there's any
         final String tag = "@" + u.getScreenName();
-        final int tagLength = tag.length();
+        int headerLength = tag.length() + Integer.toString(tweetStormLength).length() + 3;
+        String previousStatusId = res.body().getStatusId();
 
-        // Both begin index and end index are inclusive.
-        int startIndex = 0;
-        int endIndex = 0;
-        int tweetCount = 1;
-        int headerLength = tagLength + Integer.toString(tweetCount).length() + 3;
-
-        while (startIndex < bodyTweet.length()) {
+        while (startIndex < thread.length()) {
             endIndex = startIndex + Constants.TWEET_MAX_CHAR - headerLength;
-            if (endIndex >= bodyTweet.length()) {
-                endIndex = bodyTweet.length() - 1;
+            if (endIndex >= thread.length()) {
+                endIndex = thread.length() - 1;
             } else {
-                endIndex = backUpToLastNonLetterCodePoint(bodyTweet, startIndex, endIndex);
+                endIndex = backUpToLastNonLetterCodePoint(thread, startIndex, endIndex);
             }
 
-            TwitterTextParseResults parseResult = TwitterTextParser.parseTweet(
-                        bodyTweet.substring(startIndex, endIndex + 1));
+            parseResult = TwitterTextParser.parseTweet(
+                        thread.substring(startIndex, endIndex + 1));
 
             while (parseResult.weightedLength > (Constants.TWEET_MAX_CHAR - headerLength)){
                 endIndex -= (endIndex - (140 - headerLength)) / 2;
-                endIndex = backUpToLastNonLetterCodePoint(bodyTweet, startIndex, endIndex);
+                endIndex = backUpToLastNonLetterCodePoint(thread, startIndex, endIndex);
                 parseResult = TwitterTextParser.parseTweet(
-                        bodyTweet.substring(startIndex, endIndex + 1));
+                        thread.substring(startIndex, endIndex + 1));
             }
 
             Map<String, String> map = new HashMap<String, String>();
-            map.put("status", tweetCount + "/ " + tag + "\n" +
-                    bodyTweet.substring(startIndex, endIndex + 1));
+            map.put("status", tag +
+                    thread.substring(startIndex, endIndex + 1) + "\n" + tweetStormLength + "/ ");
             map.put("in_reply_to_status_id", previousStatusId);
 
             res = twitterServiceGson.replyToTweet(map).execute();
@@ -252,10 +272,10 @@ public class TwitterApi {
                 }
                 throw (new TwitterApiException(builder.toString()));
             }
-
             previousStatusId = res.body().getStatusId();
             startIndex = endIndex + 1;
-            tweetCount ++;
+            tweetStormLength ++;
+            headerLength = tag.length() + Integer.toString(tweetStormLength).length() + 3;
         }
     }
 

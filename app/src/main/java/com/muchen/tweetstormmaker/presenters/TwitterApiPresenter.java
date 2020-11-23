@@ -68,11 +68,11 @@ public class TwitterApiPresenter implements TwitterApiPresenterInterface {
 
         String url;
         try{
-            url = future.get(2, TimeUnit.SECONDS);
+            url = future.get(4, TimeUnit.SECONDS);
         } catch (InterruptedException |
                 ExecutionException |
                 TimeoutException e){
-            Log.d("executorServices", e.toString());
+            Log.d("debug.executorServices", e.toString());
             view.showToast("Attempt To Login Failed", Toast.LENGTH_LONG);
             return null;
         }
